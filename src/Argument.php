@@ -1,6 +1,6 @@
 <?php 
 
-namespace Apolinux\LogReader ;
+namespace Apolinux\CmdCli ;
 
 class Argument{
 
@@ -8,9 +8,15 @@ class Argument{
 
   private $value ;
 
-  public function __construct($name)
+  private $description ;
+
+  private $optional ;
+
+  public function __construct($name, $description=null, $optional=false)
   {
     $this->name = $name ;
+    $this->description = $description ;
+    $this->optional = $optional ;
   }
 
   public function setValue($value){
@@ -23,5 +29,18 @@ class Argument{
 
   public function getName(){
     return $this->name ;
+  }
+
+  public function __toString()
+  {
+    return "$this->value";
+  }
+
+  public function optional(){
+    return $this->optional;
+  }
+
+  public function showHelp(){
+    return "$this->name\t" . ($this->optional ? 'Optional. ' : '') . $this->description ;
   }
 }

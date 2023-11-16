@@ -1,6 +1,6 @@
 <?php 
 
-namespace Apolinux\LogReader ;
+namespace Apolinux\CmdCli ;
 
 use Exception;
 

@@ -1,0 +1,19 @@
+{
+    "name": "apolinux/cmdcli",
+    "description": "Parse CLI arguments and options",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "9.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Apolinux\\CmdCli\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Carlos Arce",
+            "email": "apolinux@gmail.com"
+        }
+    ]
+}

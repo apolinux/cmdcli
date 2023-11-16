@@ -1,11 +1,14 @@
 <?php 
 
-namespace Apolinux\LogReader ;
+namespace Apolinux\CmdCli ;
 
 class Option {
   const TYPE_LONG='LONG';
   const TYPE_SHORT='SHORT';
-  const TYPE_ARG='ARG';
+  //const TYPE_ARG='ARG';
+
+  const DATA_TYPE_BOOL = 'bool';
+  const DATA_TYPE_NOBOOL='nobool';
 
   private $name ;
   private $short ;
@@ -16,14 +19,34 @@ class Option {
   private $parameter ;
   private $optional;
   private $defined = false;
+  private $description ;
 
-  public function __construct($name, $data_type,$short=null,$long=null, $require_param=false, $is_optional=false){
+  /**
+   * class constructor
+   * 
+   * @param string $name
+   * @param string $data_type
+   * @param string $short short option, 1 word
+   * @param string $long long option
+   * @param bool $require_param true if option requires a parameter
+   * @param bool $is_optional true if option is optional
+   */
+  public function __construct(
+    string $name, 
+    $data_type, 
+    string $description = null ,
+    $short=null,
+    $long=null, 
+    bool $require_param=false, 
+    bool $is_optional=false
+    ){
     $this->name = $name ;
     $this->short = $short ;
     $this->long  = $long;
     $this->data_type  = $data_type ;
     $this->require_param = $require_param ;
     $this->optional = $is_optional ;
+    $this->description = $description ;
   }
 
   public function getName(){
@@ -56,17 +79,52 @@ class Option {
   }
 
   public function isValid(){
-    
+    return ( $this->optional || $this->isDefinedComplete() );
+  }
+
+  public function isDefinedComplete(){
     return (
-      $this->optional 
-      || 
-      (
-        $this->defined && (
-          ($this->require_param && ! is_null($this->parameter)) 
-          || 
-          (! $this->require_param)
-        )
+      $this->defined && (
+        ($this->require_param && ! is_null($this->parameter)) 
+        || 
+        (! $this->require_param)
       )
     );
+  }
+
+  public function getValue(){
+    if($this->isDefinedComplete()){
+      if($this->require_param){
+        return $this->parameter ;
+      }
+      return true ;
+    }
+    return false ;
+  }
+
+  public function helpSimple(){
+    $out = $this->getShortLong();
+    if($this->optional){
+      $out="[$out]";
+    }
+    return $out ;
+  }
+
+  private function getShortLong(){
+    $out=[];
+    if($this->short){
+      $out[]= '-'. $this->short ;
+    }
+    if($this->long){
+      $out[] = '--' . $this->long;
+    }
+
+    return sprintf("%s", implode(' | ',$out));
+  }
+
+  public function helpComplete(){
+    return $this->getShortLong() ."\t" . 
+    ($this->optional ? 'Optional. ':'') . 
+    ($this->description ?? $this->name );
   }
 }
