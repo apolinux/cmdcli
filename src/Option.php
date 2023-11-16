@@ -2,23 +2,92 @@
 
 namespace Apolinux\CmdCli ;
 
+/**
+ * Define an Option 
+ * 
+ * option is a string that begins with '-' or '--' and contains numbers or words
+ */
 class Option {
+  /**
+   * @const string
+   */
   const TYPE_LONG='LONG';
-  const TYPE_SHORT='SHORT';
-  //const TYPE_ARG='ARG';
 
+  /**
+   * @const string
+   */
+  const TYPE_SHORT='SHORT';
+  
+  /**
+   * @const string
+   */
   const DATA_TYPE_BOOL = 'bool';
+
+  /**
+   * @const string
+   */
   const DATA_TYPE_NOBOOL='nobool';
 
+  /**
+   * @var string name of option
+   */
   private $name ;
+
+    
+  /**
+   * short option without '-'
+   *
+   * @var string
+   */
   private $short ;
+  
+  /**
+   * long option without '--'
+   *
+   * @var string
+   */
   private $long ;
+    
+  /**
+   * data type
+   *
+   * @var string
+   */
   private $data_type ;
+  
+  /**
+   * true if parameter is required
+   *
+   * @var bool
+   */
   private $require_param ;
-  //private $value ; // @todo could be array?
+  
+  /**
+   * value of parameter
+   *
+   * @var string
+   */
   private $parameter ;
+    
+  /**
+   * true if option is not mandatory
+   *
+   * @var bool
+   */
   private $optional;
+    
+  /**
+   * true if is defined after parsing option
+   *
+   * @var bool
+   */
   private $defined = false;
+    
+  /**
+   * description of option
+   *
+   * @var string
+   */
   private $description ;
 
   /**
@@ -28,8 +97,8 @@ class Option {
    * @param string $data_type
    * @param string $short short option, 1 word
    * @param string $long long option
-   * @param bool $require_param true if option requires a parameter
-   * @param bool $is_optional true if option is optional
+   * @param bool   $require_param true if option requires a parameter
+   * @param bool   $is_optional true if option is optional
    */
   public function __construct(
     string $name, 
@@ -48,26 +117,50 @@ class Option {
     $this->optional = $is_optional ;
     $this->description = $description ;
   }
-
+  
+  /**
+   * get name
+   *
+   * @return string
+   */
   public function getName(){
     return $this->name ;
   }
-
+  
+  /**
+   * return optional
+   *
+   * @return bool
+   */
   public function isOptional(){
     return $this->optional ;
   }
-
+  
+  /**
+   * return requireParam
+   *
+   * @return bool
+   */
   public function requireParam(){
     return $this->require_param;
   }
-
+  
+  /**
+   * set parameter
+   *
+   * @param  string $parameter
+   * @return void
+   */
   public function setParameter($parameter){
     $this->parameter = $parameter;
   }
 
   /**
-   * @param string $name
-   * @param int $size short or long
+   * define if is named or not and set defined
+   * 
+   * @param  string $name
+   * @param  int    $size short or long
+   * @return bool
    */
   public function isNamed($name, $size){
     $type_lower = strtolower($size);
@@ -77,11 +170,21 @@ class Option {
     }
     return $is_named;
   }
-
+  
+  /**
+   * return if option is valid
+   *
+   * @return bool
+   */
   public function isValid(){
     return ( $this->optional || $this->isDefinedComplete() );
   }
-
+  
+  /**
+   * return if option is defined
+   *
+   * @return bool
+   */
   public function isDefinedComplete(){
     return (
       $this->defined && (
@@ -91,7 +194,15 @@ class Option {
       )
     );
   }
-
+  
+  /**
+   * return value of option
+   * 
+   * return bool if option not requires parameter
+   * return string if option requires parameter or  null
+   *
+   * @return null|bool|string
+   */
   public function getValue(){
     if($this->isDefinedComplete()){
       if($this->require_param){
@@ -101,7 +212,12 @@ class Option {
     }
     return false ;
   }
-
+  
+  /**
+   * returns description of short/long options
+   *
+   * @return string
+   */
   public function helpSimple(){
     $out = $this->getShortLong();
     if($this->optional){
@@ -109,7 +225,12 @@ class Option {
     }
     return $out ;
   }
-
+  
+  /**
+   * return short information
+   *
+   * @return string
+   */
   private function getShortLong(){
     $out=[];
     if($this->short){
@@ -121,7 +242,12 @@ class Option {
 
     return sprintf("%s", implode(' | ',$out));
   }
-
+  
+  /**
+   * return detailed information
+   *
+   * @return string
+   */
   public function helpComplete(){
     return $this->getShortLong() ."\t" . 
     ($this->optional ? 'Optional. ':'') . 

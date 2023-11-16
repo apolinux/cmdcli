@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * script used in tests 
+ * to validate exit code and text
+ */
 use Apolinux\CmdCli\CmdCli;
 
 require_once __DIR__ . '/../vendor/autoload.php';
