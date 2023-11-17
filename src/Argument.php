@@ -102,9 +102,12 @@ class Argument{
   /**
    * show help
    *
-   * @return string
+   * @return array
    */
   public function showHelp(){
-    return "$this->name\t" . ($this->optional ? 'Optional. ' : '') . $this->description ;
+    return [
+      $this->name, 
+      ($this->optional ? 'Optional. ' : '') . $this->description 
+    ];
   }
 }

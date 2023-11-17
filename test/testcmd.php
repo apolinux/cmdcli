@@ -11,7 +11,7 @@ $cmd_cli = new CmdCli('A command name');
 $cmd_cli->addOpt(
   'xml', 
   CmdCli::TYPE_SINGLE_OPT, 
-  'desc',
+  'description of x',
   'x',
   null, 
   false       

@@ -246,11 +246,13 @@ class Option {
   /**
    * return detailed information
    *
-   * @return string
+   * @return array
    */
   public function helpComplete(){
-    return $this->getShortLong() ."\t" . 
-    ($this->optional ? 'Optional. ':'') . 
-    ($this->description ?? $this->name );
+    return [
+      $this->getShortLong() , 
+      ($this->optional ? 'Optional. ':'') . 
+      ($this->description ?? $this->name )
+    ];
   }
 }

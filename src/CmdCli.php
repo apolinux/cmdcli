@@ -49,6 +49,8 @@ class CmdCli{
    */
   private $description ;
 
+  private $help_options = ['-h | --help', 'Shows this help'] ;
+
   /**
    * class constructor
    *
@@ -225,20 +227,18 @@ class CmdCli{
    * @return string
    */
   private function showMessage($text=''){
-    $description = $this->command_name . 
-      (!empty($this->description) ? '. ' .$this->description : '' ) ;
+    $description = $this->description ;
       
     $opt_list = $this->getOptList();
     $arg_list = $this->getArgList();
-    $opt_list_v = $this->getOptListLong();
-    $arg_list_v = $this->getArgListLong();
+    $help_list = $this->getHelpList();
+    $opt_list_v = $this->getListLong();
+    
     $info=<<<END
 $description    
-Usage: $this->command_name $opt_list $arg_list
+Usage: $this->command_name $opt_list $arg_list$help_list
 option list:
- $opt_list_v
- $arg_list_v
-     -h | --help    Show this help
+$opt_list_v
 END;
     return $info . PHP_EOL . 
     ($this->help_text ? $this->help_text .PHP_EOL :'' ).
@@ -278,29 +278,87 @@ END;
   /**
    * get detailed option list 
    *
-   * @return string
+   * @return array
    */
   private function getOptListLong(){
-    $a=array_map(function($obj){
-        return "\t".$obj->helpComplete() ;
-      },$this->opt_list 
+    $a=array_map(
+      function($obj){
+        return $obj->helpComplete() ;
+      },
+      $this->opt_list 
     );
-    return implode("\n",$a);
+    return $a ;
   }
   
   /**
    * get detailed argument list
    *
-   * @return string
+   * @return array
    */
   private function getArgListLong(){
-    $a=array_map(function($obj){
-        return "\t".$obj->showHelp() ;
-      },$this->arg_list 
+    $a=array_map(
+      function($obj){
+        return $obj->showHelp() ;
+      },
+      $this->arg_list 
     );
-    return implode("\n",$a);
+    return $a ;
   }
   
+  /**
+   * get help options 
+   * 
+   * @return array
+   */
+  private function getHelpOptions(){
+    return $this->help_options ;
+  }
+
+  /**
+   * set help options
+   * @param string $short
+   * @param string $long
+   * @param string $description
+   */
+  public function setHelpOptions($short,$long,$description){
+    $this->help_options = ["-$short | --$long", $description] ;
+  }
+
+  private function getHelpList(){
+    return $this->help_options[0];
+  }
+
+  /**
+   * shows the detailed help of options
+   * calculates max width of option list
+   */
+  private function getListLong(){
+    $opts=array_merge(
+      $this->getOptListLong(),
+      $this->getArgListLong(),
+      [$this->getHelpOptions()]
+    );
+
+    // get max size of first column
+    $max_length = array_reduce(
+      array_column($opts,0),
+      function($last,$current){
+        return max($last, strlen($current));
+      },
+      0
+    );
+
+    $out = array_reduce(
+      $opts,
+      function($last,$current) use($max_length){
+        return ($last=='' ? '': $last. PHP_EOL) . 
+        sprintf("  %-{$max_length}s  %s",$current[0], $current[1]) ;
+      },
+      ''
+    );
+    return $out ;
+  }
+
   /**
    * validate options and arguments
    *
