@@ -15,5 +15,6 @@
             "name": "Carlos Arce",
             "email": "apolinux@gmail.com"
         }
-    ]
+    ],
+    "license": "MIT"
 }
