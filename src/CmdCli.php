@@ -318,8 +318,12 @@ END;
    * 
    * @return array
    */
-  private function getHelpOptions(){
-    return $this->help_options ;
+  private function getHelpOptions($add_optional=false){
+    $options = $this->help_options ;
+    if($add_optional){
+      $options[1] ="Optional. ". $options[1];
+    }
+    return $options ;
   }
 
   /**
@@ -333,7 +337,7 @@ END;
   }
 
   private function getHelpList(){
-    return $this->help_options[0] ;
+    return sprintf("[ %s ]",$this->help_options[0]) ;
   }
 
   /**
@@ -343,7 +347,7 @@ END;
   private function getListLong(){
     $opts=array_merge(
       $this->getOptListLong(),
-      [$this->getHelpOptions()],
+      [$this->getHelpOptions(true)],
       $this->getArgListLong()
     );
 
