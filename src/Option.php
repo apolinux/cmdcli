@@ -221,7 +221,7 @@ class Option {
   public function helpSimple(){
     $out = $this->getShortLong();
     if($this->optional){
-      $out="[$out]";
+      $out="[ $out ]";
     }
     return $out ;
   }

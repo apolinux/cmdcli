@@ -15,7 +15,7 @@ $cmd_cli->addOpt(
   'x',
   null, 
   false       
-);
+)->addArg('filename','some filename',true);
 
 $input = ['cmdname','a','y','sign'];
 $cmd_cli->parse($input);

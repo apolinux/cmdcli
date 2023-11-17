@@ -110,4 +110,17 @@ class Argument{
       ($this->optional ? 'Optional. ' : '') . $this->description 
     ];
   }
+
+  /**
+   * returns description of short/long options
+   *
+   * @return string
+   */
+  public function helpSimple(){
+    $out = $this->name ;
+    if($this->optional){
+      $out="[ $out ]";
+    }
+    return $out ;
+  }
 }

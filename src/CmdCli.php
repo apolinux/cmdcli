@@ -232,11 +232,12 @@ class CmdCli{
     $opt_list = $this->getOptList();
     $arg_list = $this->getArgList();
     $help_list = $this->getHelpList();
+    $usage=$this->listUsage($this->command_name, $opt_list, $help_list, $arg_list);
     $opt_list_v = $this->getListLong();
     
     $info=<<<END
 $description    
-Usage: $this->command_name $opt_list $arg_list$help_list
+Usage: $usage
 option list:
 $opt_list_v
 END;
@@ -245,6 +246,13 @@ END;
     (! empty($text) ? $text . PHP_EOL : '');
   }
   
+  private function listUsage(...$args){
+    return (
+      trim(join(' ',$args)
+        ) 
+    );
+  }
+
   /**
    * get option list as string
    * 
@@ -269,7 +277,7 @@ END;
    */
   private function getArgList(){
     $a=array_map(function($obj){
-        return $obj->getName() ;
+        return $obj->helpSimple() ;
       },$this->arg_list 
     );
     return implode(' ',$a);
@@ -325,7 +333,7 @@ END;
   }
 
   private function getHelpList(){
-    return $this->help_options[0];
+    return $this->help_options[0] ;
   }
 
   /**
@@ -335,8 +343,8 @@ END;
   private function getListLong(){
     $opts=array_merge(
       $this->getOptListLong(),
-      $this->getArgListLong(),
-      [$this->getHelpOptions()]
+      [$this->getHelpOptions()],
+      $this->getArgListLong()
     );
 
     // get max size of first column
